@@ -9,7 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build
-        run: make build
+        run: make
       - name: Zip
         run: tar -czvf release.tar.gz build
       - name: Release
