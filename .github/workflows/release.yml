@@ -5,13 +5,16 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-    # container:
-      #  image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
+    container:
+        image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Fetch
-        run: docker build . -t local --output type=local,dest=.
+      - name: Build
+        run: make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
+             make test &&
+             make clean &&
+             make ARCH_TAG=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=/usr/local/musl/aarch64/bin/musl-gcc -j release
       - name: Zip
         run: tar -czvf release.tar.gz build
       - name: Release
