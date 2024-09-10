@@ -8,14 +8,12 @@ jobs:
     container:
         image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
     env:
-        ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
+      ACTIONS_RUNNER_FORCED_INTERNAL_NODE_VERSION: node16
+      ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node16
+      ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - name: ls
         run: pwd && ls -la && ls -la /
-      - name: fix node
-        run: cd $RUNNER_HOME/actions-runner/externals &&
-             mv node20 node20.bak
-             ln -s node16 node20
       - uses: actions/checkout@v4
       - name: Build
         run: make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
