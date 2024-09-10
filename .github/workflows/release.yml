@@ -5,11 +5,14 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    
     container:
         image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
+    env:
+        ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Build
         run: make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
              make test &&
