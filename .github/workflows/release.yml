@@ -8,10 +8,11 @@ jobs:
     # container:
       #  image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
     steps:
-      - name: Fetch
-        run: docker build --file ./DockerFile
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Fetch
+        run: docker build -t local < ./DockerFile
+    
       - name: Build
         run: make
       - name: Zip
