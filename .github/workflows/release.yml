@@ -16,7 +16,7 @@ jobs:
              make clean &&
              make ARCH_TAG=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=/usr/local/musl/aarch64/bin/musl-gcc -j release
       - name: Zip
-        run: tar -czvf release.tar.gz build
+        run: tar -czvf release.tar.gz async-profiler/build
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
