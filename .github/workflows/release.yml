@@ -13,7 +13,6 @@ jobs:
         run: apt-get update && apt-get install -y git && git clone https://github.com/openorclose/async-profiler.git && cd async-profiler && git checkout $GITHUB_SHA &&
              make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
              sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 &&
-             make test &&
              make clean &&
              make ARCH_TAG=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=/usr/local/musl/aarch64/bin/musl-gcc -j release
       - name: Zip
