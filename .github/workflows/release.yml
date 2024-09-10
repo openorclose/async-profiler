@@ -10,7 +10,7 @@ jobs:
         options: --user root
     steps:
       - name: ls
-        run: apt-get update && apt-get install -y git jq && git clone https://github.com/openorclose/async-profiler.git && cd async-profiler && git checkout $GITHUB_SHA &&
+        run: apt-get update && apt-get install -y git curl jq && git clone https://github.com/openorclose/async-profiler.git && cd async-profiler && git checkout $GITHUB_SHA &&
              make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
              sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 &&
              make clean &&
