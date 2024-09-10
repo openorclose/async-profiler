@@ -9,7 +9,7 @@ jobs:
         image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
       - name: Build
         run: make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
              make test &&
