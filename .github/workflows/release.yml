@@ -12,9 +12,6 @@ jobs:
         uses: actions/checkout@v4
       - name: Fetch
         run: docker build . -t local
-    
-      - name: Build
-        run: make
       - name: Zip
         run: tar -czvf release.tar.gz build
       - name: Release
