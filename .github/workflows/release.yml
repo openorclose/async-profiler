@@ -20,6 +20,7 @@ jobs:
       - name: Release
         env:
           UPLOAD_TOKEN: ${{ secrets.UPLOAD_TOKEN }}
+          DEBUG: api
         run: |
           curl -L -X POST \
           -H 'Accept: application/vnd.github+json' \
