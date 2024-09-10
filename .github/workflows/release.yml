@@ -5,7 +5,6 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-    
     container:
         image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
     env:
@@ -13,6 +12,10 @@ jobs:
     steps:
       - name: ls
         run: pwd && ls -la
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+            node-version: 18
       - name: Build
         run: cd $GITHUB_WORKSPACE &&
              make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
