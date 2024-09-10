@@ -10,7 +10,7 @@ jobs:
         options: --user root
     steps:
       - name: ls
-        run: git clone https://github.com/openorclose/async-profiler.git . && git checkout $GITHUB_SHA
+        run: apt-get update && apt-get install -y git && git clone https://github.com/openorclose/async-profiler.git . && git checkout $GITHUB_SHA
       - name: Build
         run: make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
              make test &&
