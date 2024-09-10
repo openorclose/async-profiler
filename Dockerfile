@@ -1,7 +1,7 @@
 # Image for building async-profiler release packages for x64 and arm64
 
 # Stage 0: download musl sources and build cross-toolchains for both architectures
-FROM public.ecr.aws/lts/ubuntu:18.04 as builder-stage
+FROM public.ecr.aws/lts/ubuntu:18.04
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     sudo patchelf make g++ g++-aarch64-linux-gnu openjdk-11-jdk-headless && \
@@ -22,9 +22,6 @@ RUN ["/bin/bash", "-c", "\
     make -j`nproc` && make install && make clean && \
     ln -s /usr/include/x86_64-linux-gnu/asm /usr/include/{asm-generic,linux} /usr/local/musl/x86_64/include/ && \
     ln -s /usr/aarch64-linux-gnu/include/{asm,asm-generic,linux} /usr/local/musl/aarch64/include/"]
-
-FROM scratch
-COPY --from=builder-stage /build /
 
 # Stage 1: install build tools + copy musl toolchain from the previous step
 FROM public.ecr.aws/lts/ubuntu:18.04
