@@ -13,7 +13,7 @@ jobs:
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - name: ls
-        run: pwd && ls -la && ls -la /
+        run: pwd && ls -la && ls -la /github
       - uses: actions/checkout@v4
       - name: Build
         run: make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
