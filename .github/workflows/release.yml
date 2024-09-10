@@ -15,7 +15,7 @@ jobs:
       - name: Install Node
         uses: actions/setup-node@v4
         with:
-            node-version: 18
+            node-version: 16
       - name: Build
         run: cd $GITHUB_WORKSPACE &&
              make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
