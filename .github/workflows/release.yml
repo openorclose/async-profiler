@@ -7,13 +7,14 @@ jobs:
     runs-on: ubuntu-latest
     container:
         image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
+        options: --user root
     env:
       ACTIONS_RUNNER_FORCED_INTERNAL_NODE_VERSION: node16
       ACTIONS_RUNNER_FORCE_ACTIONS_NODE_VERSION: node16
       ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - name: ls
-        run: pwd && ls -la / && mv /__e/node20 /__e/node20.bak && mv /__e/node16 /__e/node20
+        run: pwd && ls -la / && sudo mv /__e/node20 /__e/node20.bak && sudo mv /__e/node16 /__e/node20
       - uses: actions/checkout@v4
       - name: Build
         run: make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
