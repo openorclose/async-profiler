@@ -11,7 +11,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Fetch
-        run: docker build -t local < ./DockerFile
+        run: docker build -t local < ./Dockerfile
     
       - name: Build
         run: make
