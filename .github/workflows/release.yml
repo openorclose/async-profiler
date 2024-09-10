@@ -12,7 +12,7 @@ jobs:
         ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - name: ls
-        run: echo $GITHUB_WORKSPACE && ls $GITHUB_WORKSPACE
+        run: pwd && ls -la
       - name: Build
         run: cd $GITHUB_WORKSPACE &&
              make CC=/usr/local/musl/x86_64/bin/musl-gcc -j release &&
