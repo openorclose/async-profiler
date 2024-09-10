@@ -11,7 +11,7 @@ jobs:
         ACTIONS_ALLOW_USE_UNSECURE_NODE_VERSION: true
     steps:
       - name: ls
-        run: pwd && ls -la
+        run: pwd && ls -la && ls -la /
       - name: fix node
         run: cd $RUNNER_HOME/actions-runner/externals &&
              mv node20 node20.bak
