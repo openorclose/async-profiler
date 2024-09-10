@@ -5,8 +5,8 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
-    container:
-        image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
+    # container:
+      #  image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
     steps:
       - name: Fetch
         run: docker build --file ./DockerFile
