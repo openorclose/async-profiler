@@ -7,7 +7,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
         image: docker://public.ecr.aws/async-profiler/asprof-builder:latest
-        options: --user root --privileged --security-opt seccomp=unconfined # needed in order to use sysctl
+        options: --user root --privileged # needed in order to use sysctl
     steps:
       - name: Build
         run: |
