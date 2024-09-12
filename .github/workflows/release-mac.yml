@@ -6,10 +6,6 @@ jobs:
   build-and-publish:
     runs-on: macos-latest
     steps:
-      - uses: actions/setup-java@v4
-        with:
-          distribution: 'corretto'
-          java-version: '17'
       # Unfortunately we cannot use this action to clone the repository due to the actions requiring Node 20 which this container doesn't support
       # https://github.com/actions/checkout/issues/1590
       # https://github.com/actions/checkout/issues/1590#issuecomment-2293211398
