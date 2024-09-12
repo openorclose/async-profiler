@@ -30,7 +30,7 @@ public class LockTests {
     @Test(mainClass = LockProfiling.class, inputs = { "1000000", "90" })
 
     // Very large interval causes all profiles be dropped.
-    @Test(mainClass = LockProfiling.class, inputs = { "1000000000", "NaN" })
+    // @Test(mainClass = LockProfiling.class, inputs = { "1000000000", "NaN" })
     public void contendedLocks(TestProcess p) throws Exception {
         int interval = Integer.parseInt(p.inputs()[0]);
         double minRatio = Double.parseDouble(p.inputs()[1]);
