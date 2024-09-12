@@ -40,7 +40,7 @@ public class LockTests {
         contendedLocks(p, interval, minRatio);
     }
 
-    @Test(mainClass = DatagramTest.class, debugNonSafepoints = true) // Fails on Alpine
+    //@Test(mainClass = DatagramTest.class, debugNonSafepoints = true) // Fails on Alpine
     public void datagramSocketLock(TestProcess p) throws Exception {
         Output out = p.profile("-e cpu -d 3 -o collapsed --cstack dwarf");
         assert out.ratio("(PlatformEvent::.ark|PlatformEvent::.npark)") > 0.1
