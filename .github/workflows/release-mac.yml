@@ -21,6 +21,7 @@ jobs:
             make release
             #sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
             #make test
+            ls
       # Unfortunately we cannot use this action upload artifacts to the release due to the actions requiring Node 20 which this container doesn't support
       # https://github.com/actions/checkout/issues/1590
       # https://github.com/actions/checkout/issues/1590#issuecomment-2293211398
