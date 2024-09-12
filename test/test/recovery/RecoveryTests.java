@@ -16,7 +16,6 @@ public class RecoveryTests {
     @Test(mainClass = StringBuilderTest.class, jvmArgs = "-XX:UseAVX=2", arch = {Arch.X64, Arch.X86}, debugNonSafepoints = true)
     public void stringBuilder(TestProcess p) throws Exception {
         Output out = p.profile("-d 10 -e cpu -o collapsed");
-        System.out.println(out.toString());
 
         Assert.isGreater(out.ratio("StringBuilder.delete;"), 0.9);
         Assert.isGreater(out.ratio("arraycopy"), 0.9);
