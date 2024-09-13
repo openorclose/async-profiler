@@ -15,7 +15,7 @@ public class RecoveryTests {
 
     @Test(mainClass = StringBuilderTest.class, jvmArgs = "-XX:UseAVX=2", arch = {Arch.X64, Arch.X86}, debugNonSafepoints = true)
     public void stringBuilder(TestProcess p) throws Exception {
-        Output out = p.profile("-d 10 -e cpu -o collapsed");
+        Output out = p.profile("-d 3 -e cpu -o collapsed");
 
         Assert.isGreater(out.ratio("StringBuilder.delete;"), 0.9);
         Assert.isGreater(out.ratio("arraycopy"), 0.9);
@@ -29,6 +29,7 @@ public class RecoveryTests {
     @Test(mainClass = StringBuilderTest.class, debugNonSafepoints = true, arch = {Arch.ARM64, Arch.ARM32})
     public void stringBuilderArm(TestProcess p) throws Exception {
         Output out = p.profile("-d 3 -e cpu -o collapsed");
+        System.out.println(out.toString());
         Assert.isGreater(out.ratio("(forward|foward|backward)_copy_longs"), 0.9); // there's a typo on some JDK versions
 
         out = p.profile("-d 3 -e cpu -o collapsed --safe-mode 2");
