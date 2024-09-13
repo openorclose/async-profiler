@@ -12,6 +12,7 @@ import one.profiler.test.TestProcess;
 public class LockTests {
     private static void contendedLocks(TestProcess p, int interval, double minRatio) throws Exception {
         Output out = p.profile("-d 10 --lock " + interval + " --threads -o collapsed");
+        System.out.println(out.toString());
         Output waitingLocks = out.filter("LockProfiling\\.contend;java\\.lang\\.Object");
 
         double ratio = 100 * out.ratio("contend-0.5-", "contend-0.05-");
