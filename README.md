@@ -1,4 +1,4 @@
-123# async-profiler
+# async-profiler
 
 This project is a low overhead sampling profiler for Java
 that does not suffer from [Safepoint bias problem](http://psy-lob-saw.blogspot.ru/2016/02/why-most-sampling-java-profilers-are.html).
