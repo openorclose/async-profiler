@@ -52,6 +52,7 @@ public class RecoveryTests {
         Assert.isGreater(out.ratio("unknown_Java"), 0.2);
 
         out = p.profile("-d 3 -e cpu -o collapsed");
+        System.out.println(out.toString());
         Assert.isGreater(out.ratio("itable stub"), 0.01);
         Assert.isGreater(out.ratio("Suppliers.loop"), 0.5);
     }
