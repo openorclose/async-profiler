@@ -7,6 +7,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 5
       - name: Delete
         run: |
             # get the last 5 commit hashes in the format 
@@ -37,7 +39,6 @@ jobs:
       # Instead, we have to manually call the REST endpoints at https://docs.github.com/en/rest/releases/assets?apiVersion=2022-11-28
       - name: Publish Artifacts
         run: |
-            cd async-profiler
             # publish mac binaries
             curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/zip" --data-binary "@async-profiler-3.0-macos-arm64.zip" "https://uploads.github.com/repos/openorclose/async-profiler/releases/174369452/assets?name=async-profiler-3.0-macos-arm64-$GITHUB_SHA.zip"
             
