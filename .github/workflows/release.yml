@@ -36,7 +36,9 @@ jobs:
       # Instead, we have to manually call the REST endpoints at https://docs.github.com/en/rest/releases/assets?apiVersion=2022-11-28
       - name: Publish Artifacts
         run: |
-            cd async-profiler;
+            pwd
+            
+            cd async-profiler
             # get the last 5 commit hashes in the format 
             #    contains($HASH1) or contains($HASH2) or
             # to insert into jq
