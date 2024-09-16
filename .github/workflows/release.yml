@@ -36,8 +36,6 @@ jobs:
       # Instead, we have to manually call the REST endpoints at https://docs.github.com/en/rest/releases/assets?apiVersion=2022-11-28
       - name: Publish Artifacts
         run: |
-            pwd
-            
             cd async-profiler
             # get the last 5 commit hashes in the format 
             #    contains($HASH1) or contains($HASH2) or
@@ -48,14 +46,6 @@ jobs:
             # delete all assets in the nightly release
             for id in $ids; do curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/openorclose/async-profiler/releases/assets/${id}"; done
             # publish x86 binaries
-            cd ..
-      - uses: ./.github/actions/upload
-        with:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            file_location: ${{ 'async-profiler/async-profiler-3.0-linux-arm64.tar.gz' }}
-            upload_location: ${{ format('async-profiler-3.0-linux-arm64-{0}.tar.gz', '${{ $GITHUB_SHA }}' ) }}
-      - uses: ./.github/actions/upload
-        with:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            file_location: ${{ 'async-profiler/async-profiler-3.0-linux-x64.tar.gz' }}
-            upload_location: ${{ format('async-profiler-3.0-linux-x64-{0}.tar.gz', '${{ $GITHUB_SHA }}' ) }}
+            curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/zip" --data-binary "@async-profiler-3.0-linux-arm64.tar.gz" "https://uploads.github.com/repos/openorclose/async-profiler/releases/174369452/assets?name=async-profiler-3.0-linux-arm64-$GITHUB_SHA.tar.gz"
+            # publish arm64 binaries
+            curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/zip" --data-binary "@async-profiler-3.0-linux-x64.tar.gz" "https://uploads.github.com/repos/openorclose/async-profiler/releases/174369452/assets?name=async-profiler-3.0-linux-x64-$GITHUB_SHA.tar.gz"
