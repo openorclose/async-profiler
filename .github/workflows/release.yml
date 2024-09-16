@@ -50,9 +50,9 @@ jobs:
         with:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             file_location: ${{ 'async-profiler/async-profiler-3.0-linux-arm64.tar.gz' }}
-            upload_location: ${{ format('async-profiler-3.0-linux-arm64-{0}.tar.gz', ${{ $GITHUB_SHA }}) }}
+            upload_location: ${{ format('async-profiler-3.0-linux-arm64-{0}.tar.gz', '${{ $GITHUB_SHA }}' ) }}
       - uses: ./.github/actions/upload
         with:
             GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
             file_location: ${{ 'async-profiler/async-profiler-3.0-linux-x64.tar.gz' }}
-            upload_location: ${{ format('async-profiler-3.0-linux-x64-{0}.tar.gz', ${{ $GITHUB_SHA }}) }}
+            upload_location: ${{ format('async-profiler-3.0-linux-x64-{0}.tar.gz', '${{ $GITHUB_SHA }}' ) }}
