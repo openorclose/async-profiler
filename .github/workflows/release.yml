@@ -36,7 +36,7 @@ jobs:
           #make test # commented out because tests are failing on mac
       - name: Publish Artifacts
         run: |
-          for name in $(find . -name "async-profiler*.tar.gz" -o -name "async-profiler*.zip" -exec basename {} \;) ; do
+          for name in $(find . \( -name "async-profiler*.tar.gz" -o -name "async-profiler*.zip" \) -exec basename {} \;) ; do
             echo $name
             # publish binary
             curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/zip" --data-binary "@${name}" "https://uploads.github.com/repos/${REPOSITORY}/releases/${RELEASE_ID}/assets?name=${name}"
@@ -75,7 +75,7 @@ jobs:
       - name: Publish Artifacts
         run: |
           cd async-profiler
-          for name in $(find . -name "async-profiler*.tar.gz" -o -name "async-profiler*.zip" -exec basename {} \;) ; do
+          for name in $(find . \( -name "async-profiler*.tar.gz" -o -name "async-profiler*.zip" \) -exec basename {} \;) ; do
             # publish binary
             curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" -H "Content-Type: application/zip" --data-binary "@${name}" "https://uploads.github.com/repos/${REPOSITORY}/releases/${RELEASE_ID}/assets?name=${name}"
           done
