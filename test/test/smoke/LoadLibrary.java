@@ -11,8 +11,8 @@ import java.lang.management.ManagementFactory;
 public class LoadLibrary {
 
     public static void main(String[] args) throws Exception {
-        for (int i = 0; i < 200; i++) {
-            Thread.sleep(10);
+        for (int i = 0; i < 50; i++) {
+            Thread.sleep(40);
         }
 
         // Late load of libmanagement.so
