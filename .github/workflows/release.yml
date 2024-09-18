@@ -59,6 +59,10 @@ jobs:
       - name: Build and Test
         run: |
           mount -v | grep "^/" | awk '{print "\nPartition identifier: " $1  "\n Mountpoint: "  $3}'
+          sudo umount /__e
+          sudo umount /dev/sda1
+          sudo mount -o remount,rw /__e /dev/sda1
+          
           ls /__e
           apt-get update && apt-get install -y git curl jq # curl for publishing artifacts, git for checkout out source, jq to parse github api responses
           curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
