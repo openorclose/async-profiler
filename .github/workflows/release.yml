@@ -32,7 +32,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build and Test
         run: |
-          make COMMIT_TAG=true release publish-git-artifact
+          make COMMIT_TAG=true release publish-github-artifact
           #sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
           #make test # commented out because tests are failing on mac
       - name: Publish Artifacts
@@ -76,7 +76,7 @@ jobs:
           #make test
           make publish
           make clean
-          make COMMIT_TAG=true ARCH_TAG=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=/usr/local/musl/aarch64/bin/musl-gcc -j release publish-git-artifact # build arm64 binaries
+          make COMMIT_TAG=true ARCH_TAG=arm64 CROSS_COMPILE=aarch64-linux-gnu- CC=/usr/local/musl/aarch64/bin/musl-gcc -j release publish-github-artifact # build arm64 binaries
       # - uses: actions/checkout@v4
       # Unfortunately we cannot use this action upload artifacts to the release due to the actions requiring Node 20 which this container doesn't support
       # https://github.com/actions/checkout/issues/1590
