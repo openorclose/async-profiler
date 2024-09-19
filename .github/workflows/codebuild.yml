@@ -10,10 +10,7 @@ env:
   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   build-arm:
-    runs-on:
-      - codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
-      - image:arm-3.0
-      - instance-size:small
+    runs-on: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}-arm-3.0-small
     steps:
       - run: |
             echo "Hello World"
