@@ -30,5 +30,6 @@ jobs:
           # apt-get update && apt-get install -y git curl jq # curl for publishing artifacts, git for checkout out source, jq to parse github api responses
           # git clone https://github.com/${REPOSITORY}.git && cd async-profiler && git checkout $GITHUB_SHA # checkout sources
           sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-          make COMMIT_TAG=true CC=/usr/local/musl/aarch64/bin/musl-gcc release test publish-github-artifact # build and publish arm64 binaries
-
+          #make COMMIT_TAG=true CC=/usr/local/musl/aarch64/bin/musl-gcc release test publish-github-artifact # build and publish arm64 binaries
+          echo "123" > test.txt
+          curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/zip" --data-binary "@test.txt" "https://uploads.github.com/repos/$(REPOSITORY)/releases/$(RELEASE_ID)/assets?name=test.txt"
