@@ -23,7 +23,7 @@ jobs:
           cd ${musl_src}
           ./configure --disable-shared --prefix=/usr/local/musl/aarch64
           make -j`nproc` && sudo make install && make clean
-          sudo ln -s /usr/aarch64-linux-gnu/include/{asm,asm-generic,linux} /usr/local/musl/aarch64/include/
+          sudo ln -s /usr/include/{asm,asm-generic,linux} /usr/local/musl/aarch64/include/
       - uses: actions/checkout@v4
       - name: Build, Test, and Publish
         run: |
