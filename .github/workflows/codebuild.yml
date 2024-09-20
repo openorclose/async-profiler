@@ -21,7 +21,7 @@ jobs:
           curl https://musl.libc.org/releases/${musl_src}.tar.gz --output ${musl_src}.tar.gz
           echo ${musl_sha256} ${musl_src}.tar.gz | sha256sum -c
           tar xfz ${musl_src}.tar.gz
-          cd /${musl_src}
+          cd ${musl_src}
           ./configure --disable-shared --prefix=/usr/local/musl/aarch64 --target=aarch64-linux-gnu
           make -j`nproc` && make install && make clean
           ln -s /usr/aarch64-linux-gnu/include/{asm,asm-generic,linux} /usr/local/musl/aarch64/include/
