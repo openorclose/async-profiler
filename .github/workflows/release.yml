@@ -39,7 +39,7 @@ jobs:
       - instance-size:medium
     env:
       REPOSITORY: openorclose/async-profiler
-      RELEASE_ID: 174369452
+      LATEST_RELEASE_ID: 176384274
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v4
