@@ -6,29 +6,15 @@ on:
       - master
 jobs:
   build-arm:
-    runs-on: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}-arm-3.0-small
+    runs-on: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
     env:
       REPOSITORY: openorclose/async-profiler
       RELEASE_ID: 174369452
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
-      - name: Setup
-        run: |
-          sudo yum install -y sudo patchelf make gcc-c++ libstdc++-static java-11-amazon-corretto
-          musl_src=musl-1.2.5
-          musl_sha256=a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4
-          curl https://musl.libc.org/releases/${musl_src}.tar.gz --output ${musl_src}.tar.gz
-          echo ${musl_sha256} ${musl_src}.tar.gz | sha256sum -c
-          tar xfz ${musl_src}.tar.gz
-          cd ${musl_src}
-          ./configure --disable-shared --prefix=/usr/local/musl/aarch64
-          make -j`nproc` && sudo make install && make clean
-          sudo ln -s /usr/include/{asm,asm-generic,linux} /usr/local/musl/aarch64/include/
       - uses: actions/checkout@v4
       - name: Build, Test, and Publish
         run: |
-          # apt-get update && apt-get install -y git curl jq # curl for publishing artifacts, git for checkout out source, jq to parse github api responses
-          # git clone https://github.com/${REPOSITORY}.git && cd async-profiler && git checkout $GITHUB_SHA # checkout sources
           sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
           make COMMIT_TAG=true CC=/usr/local/musl/aarch64/bin/musl-gcc release test publish-github-artifact # build and publish arm64 binaries
           #echo "123" > test.txt
