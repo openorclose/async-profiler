@@ -191,5 +191,5 @@ clean:
 	$(RM) -r build
 
 publish-github-artifact: release
-	curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/zip" --data-binary "@$(PACKAGE_NAME).$(PACKAGE_EXT)" "https://uploads.github.com/repos/$(REPOSITORY)/releases/$(RELEASE_ID)/assets?name=$(PACKAGE_NAME).$(PACKAGE_EXT)"
+	curl -L -X POST -H "Accept: application/vnd.github+json" -H "Authorization: token $(GITHUB_TOKEN)" -H "Content-Type: application/zip" --data-binary "@$(PACKAGE_NAME).$(PACKAGE_EXT)" "https://uploads.github.com/repos/$(REPOSITORY)/releases/$(LATEST_RELEASE_ID)/assets?name=$(PACKAGE_NAME).$(PACKAGE_EXT)"
 
