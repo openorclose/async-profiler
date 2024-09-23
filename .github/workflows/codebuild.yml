@@ -6,7 +6,9 @@ on:
       - master
 jobs:
   build-arm:
-    runs-on: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
+    runs-on:
+      - codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
+      - instance-size:medium
     env:
       REPOSITORY: openorclose/async-profiler
       RELEASE_ID: 174369452
