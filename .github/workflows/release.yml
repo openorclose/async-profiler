@@ -6,10 +6,10 @@ on:
       - master
 env:
   REPOSITORY: openorclose/async-profiler
-  RELEASE_ID: 174369452
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  PAST_RELEASES_ID: 174369452
+  LATEST_RELEASE_ID: 176384274
 jobs:
-  delete-all-but-last-five-commits:
+  delete-all-but-last-five-commits-in-previous-releases:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -23,17 +23,31 @@ jobs:
           last_five_hashes=$(git log  --format='contains("%h") or' --abbrev=8 -n5 | tr '\n' ' ')
           echo $last_five_hashes
           # get the ids of all published artifacts in the nightly release that are not for the latest 5 hashes
-          ids=$(curl -L  -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28"  "https://api.github.com/repos/${REPOSITORY}/releases/${RELEASE_ID}/assets" | jq ".[]|select(.name | ($last_five_hashes false) | not).id")
+          ids=$(curl -L  -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28"  "https://api.github.com/repos/${REPOSITORY}/releases/${PAST_RELEASES_ID}/assets" | jq ".[]|select(.name | ($last_five_hashes false) | not).id")
           # delete all assets in the nightly release
           for id in $ids; do curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${REPOSITORY}/releases/assets/${id}"; done
   build-and-publish-mac:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Build and Test
+      - name: Build, Test, and Publish
         run: |
           make COMMIT_TAG=true release test publish-github-artifact
-  build-and-publish-linux:
+  build-linux-arm:
+    runs-on:
+      - codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
+      - instance-size:medium
+    env:
+      REPOSITORY: openorclose/async-profiler
+      RELEASE_ID: 174369452
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build, Test, and Publish
+        run: |
+          sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
+          make COMMIT_TAG=true CC=/usr/local/musl/aarch64/bin/musl-gcc release test publish-github-artifact # build and publish arm64 binaries
+  build-and-publish-linux-x86:
     runs-on: ubuntu-latest
     container:
       image: docker://public.ecr.aws/async-profiler/asprof-builder-x86:latest
@@ -44,3 +58,21 @@ jobs:
         run: |
           sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
           make COMMIT_TAG=true CC=/usr/local/musl/x86_64/bin/musl-gcc -j release test publish-github-artifact # build, test, and publish x86 binaries
+  delete-all-but-latest-release:
+    needs: [build-and-publish-mac, build-and-publish-linux-x86, build-linux-arm]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 5
+      - name: Delete old commits
+        run: |
+          # get the last 5 commit hashes in the format 
+          #    contains($HASH1) or contains($HASH2) or
+          # to insert into jq
+          last_five_hashes=$(git log  --format='contains("%h") or' --abbrev=8 -n1 | tr '\n' ' ')
+          echo $last_five_hashes
+          # get the ids of all published artifacts in the nightly release that are not for the latest 5 hashes
+          ids=$(curl -L  -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28"  "https://api.github.com/repos/${REPOSITORY}/releases/${LATEST_RELEASE_ID}/assets" | jq ".[]|select(.name | ($last_five_hashes false) | not).id")
+          # delete all assets in the nightly release
+          for id in $ids; do curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${REPOSITORY}/releases/assets/${id}"; done
