@@ -26,17 +26,11 @@ jobs:
           ids=$(curl -L  -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" -H "X-GitHub-Api-Version: 2022-11-28"  "https://api.github.com/repos/${REPOSITORY}/releases/${PAST_RELEASES_ID}/assets" | jq ".[]|select(.name | ($last_five_hashes false) | not).id")
           # delete all assets in the nightly release
           for id in $ids; do curl -L -X DELETE -H "Accept: application/vnd.github+json" -H "Authorization: Bearer ${{ secrets.GITHUB_TOKEN }}" "https://api.github.com/repos/${REPOSITORY}/releases/assets/${id}"; done
-  build-and-publish-mac:
-    runs-on: macos-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build, Test, and Publish
-        run: |
-          make COMMIT_TAG=true release test publish-github-artifact
-  build-and-publish-linux:
+  build-test-publish:
     strategy:
       matrix:
         include:
+          - runson: macos-latest
           - runson: ubuntu-latest
             image: docker://public.ecr.aws/async-profiler/asprof-builder-x86:latest
             arch: x86_64
@@ -44,7 +38,7 @@ jobs:
             arch: aarch64
     env:
       REPOSITORY: openorclose/async-profiler
-      RELEASE_ID: 174369452
+      LATEST_RELEASE_ID: 174369452
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     runs-on: ${{ matrix.runson }}
     container:
@@ -52,12 +46,16 @@ jobs:
       options: --privileged # needed in order to use sysctl
     steps:
       - uses: actions/checkout@v4
-      - name: Build, Test, and Publish
+      - name: Setup linux
+      - if: ${{ matrix.runson != 'macos-latest' }}
         run: |
           sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-          make COMMIT_TAG=true CC=/usr/local/musl/${{ matrix.arch }}/bin/musl-gcc -j release test publish-github-artifact # build, test, and publish x86 binaries
+          CC=/usr/local/musl/${{ matrix.arch }}/bin/musl-gcc
+      - name: Build, test, and publish
+        run: |
+          make COMMIT_TAG=true release test publish-github-artifact # build, test, and publish x86 binaries
   delete-all-but-latest-release:
-    needs: [build-and-publish-mac, build-and-publish-linux]
+    needs: [build-test-publish]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
