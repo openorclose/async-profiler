@@ -1,4 +1,4 @@
-name: Publish Nightly Buildss
+name: Publish Nightly Builds
 
 on:
   push:
@@ -33,33 +33,31 @@ jobs:
       - name: Build, Test, and Publish
         run: |
           make COMMIT_TAG=true release test publish-github-artifact
-  build-linux-arm:
-    runs-on:
-      - codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
-      - instance-size:medium
+  build-and-publish-linux:
+    strategy:
+      matrix:
+        include:
+          - runson: ubuntu-latest
+            image: docker://public.ecr.aws/async-profiler/asprof-builder-x86:latest
+            arch: x86_64
+          - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
+            arch: aarch64
     env:
       REPOSITORY: openorclose/async-profiler
-      LATEST_RELEASE_ID: 176384274
+      RELEASE_ID: 174369452
       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    steps:
-      - uses: actions/checkout@v4
-      - name: Build, Test, and Publish
-        run: |
-          sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-          make COMMIT_TAG=true CC=/usr/local/musl/aarch64/bin/musl-gcc release test publish-github-artifact # build and publish arm64 binaries
-  build-and-publish-linux-x86:
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.runson }}
     container:
-      image: docker://public.ecr.aws/async-profiler/asprof-builder-x86:latest
+      image: ${{ matrix.image }}
       options: --privileged # needed in order to use sysctl
     steps:
       - uses: actions/checkout@v4
       - name: Build, Test, and Publish
         run: |
           sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-          make COMMIT_TAG=true CC=/usr/local/musl/x86_64/bin/musl-gcc -j release test publish-github-artifact # build, test, and publish x86 binaries
+          make COMMIT_TAG=true CC=/usr/local/musl/${{ matrix.arch }}/bin/musl-gcc -j release test publish-github-artifact # build, test, and publish x86 binaries
   delete-all-but-latest-release:
-    needs: [build-and-publish-mac, build-and-publish-linux-x86, build-linux-arm]
+    needs: [build-and-publish-mac, build-and-publish-linux]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
