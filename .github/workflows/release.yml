@@ -46,13 +46,12 @@ jobs:
       options: --privileged # needed in order to use sysctl
     steps:
       - uses: actions/checkout@v4
-      - if: ${{ matrix.runson != 'macos-latest' }}
-      - name: Setup linux
-        run: |
-          sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-          CC=/usr/local/musl/${{ matrix.arch }}/bin/musl-gcc
       - name: Build, test, and publish
         run: |
+          if [[ "${{ matrix.runson }}" != "macos-latest" ]] then
+            sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
+            CC=/usr/local/musl/${{ matrix.arch }}/bin/musl-gcc
+          fi
           make COMMIT_TAG=true release test publish-github-artifact # build, test, and publish x86 binaries
   delete-all-but-latest-release:
     needs: [build-test-publish]
