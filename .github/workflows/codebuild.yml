@@ -14,7 +14,7 @@ jobs:
     steps:
       - name: Setup
         run: |
-          sudo yum install -y sudo patchelf make gcc-c++ libstdc++ java-11-amazon-corretto
+          sudo yum install -y sudo patchelf make gcc-c++ libstdc++-static java-11-amazon-corretto
           musl_src=musl-1.2.5
           musl_sha256=a9a118bbe84d8764da0ea0d28b3ab3fae8477fc7e4085d90102b8596fc7c75e4
           curl https://musl.libc.org/releases/${musl_src}.tar.gz --output ${musl_src}.tar.gz
