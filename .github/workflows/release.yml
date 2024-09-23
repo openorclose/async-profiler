@@ -1,4 +1,4 @@
-name: Publish Nightly Builds
+name: Publish Nightly Buildss
 
 on:
   push:
