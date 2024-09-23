@@ -46,8 +46,8 @@ jobs:
       options: --privileged # needed in order to use sysctl
     steps:
       - uses: actions/checkout@v4
-      - name: Setup linux
       - if: ${{ matrix.runson != 'macos-latest' }}
+      - name: Setup linux
         run: |
           sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
           CC=/usr/local/musl/${{ matrix.arch }}/bin/musl-gcc
