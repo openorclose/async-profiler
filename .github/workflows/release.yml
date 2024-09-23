@@ -31,11 +31,13 @@ jobs:
       matrix:
         include:
           - runson: macos-latest
+            image: ${{ null }}
           - runson: ubuntu-latest
             image: docker://public.ecr.aws/async-profiler/asprof-builder-x86:latest
             arch: x86_64
           - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
             arch: aarch64
+            iamge: ${{ null }}
     env:
       REPOSITORY: openorclose/async-profiler
       LATEST_RELEASE_ID: 174369452
@@ -48,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - name: Build, test, and publish
         run: |
-          if [[ "${{ matrix.runson }}" != "macos-latest" ]]; then
+          if [[ "${{ matrix.runson }}" != "macos-latest" ]]; then # configuration needed only for linux
             sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
             CC=/usr/local/musl/${{ matrix.arch }}/bin/musl-gcc
           fi
