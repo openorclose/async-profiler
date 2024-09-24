@@ -31,6 +31,10 @@ Current release (3.0):
 async-profiler also comes bundled with IntelliJ IDEA Ultimate 2018.3 and later.  
 For more information refer to [IntelliJ IDEA documentation](https://www.jetbrains.com/help/idea/cpu-and-allocation-profiling-basic-concepts.html).
 
+Nightly releases (built on each commit to master, kept for 90 days):
+- Go to the **Publish Nightly Builds** workflow of the commit by clicking on its green tick and selecting one of the **Publish Nightly Builds / build-test-publish** workflows.
+  - In the Summary tab there will be an Artifacts section at the bottom containing binaries if tests pass.
+
 ## Supported platforms
 
 |           | Officially maintained builds | Other available ports                     |
