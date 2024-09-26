@@ -57,7 +57,7 @@ public class JfrTests {
      * @param p The test process to profile with.
      * @throws Exception Any exception thrown during profiling JFR output parsing.
      */
-    @Test(mainClass = JfrMutliModeProfiling.class, agentArgs = "start,event=cpu,alloc,lock,jfr,file=%f")
+    @Test(mainClass = JfrMutliModeProfiling.class, agentArgs = "start,event=cpu,alloc,lock,jfr,file=%f", os = Os.LINUX)
     public void parseMultiModeRecording(TestProcess p) throws Exception {
         p.waitForExit();
         Map<String, Integer> eventsCount = new HashMap<>();
