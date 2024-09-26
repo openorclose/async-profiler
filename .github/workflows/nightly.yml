@@ -3,7 +3,7 @@ name: Publish Nightly Builds ( test )
 on:
   push:
     branches:
-      - master
+      - test2
 
 jobs:
   build-test-publish:
@@ -33,7 +33,6 @@ jobs:
             sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
             CC=/usr/local/musl/${{ matrix.arch }}/bin/musl-gcc
           fi
-          git config --global --add safe.directory $PWD # needed to avoid `fatal: detected dubious ownership in repository at '/__w/async-profiler/async-profiler'` error
           make test # build and test
           make clean # remove test files
           make # build again without test files
