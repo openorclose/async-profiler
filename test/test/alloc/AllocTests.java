@@ -55,4 +55,14 @@ public class AllocTests {
         assert out.contains("java/io/ByteArrayOutputStream.toByteArray;");
         assert out.contains("G1CollectedHeap::humongous_obj_allocate");
     }
+
+    @Test(mainClass = MapReaderOpt.class, jvmVer = {11, Integer.MAX_VALUE})
+    public void objectSamplerWtihDifferentAsprofs(TestProcess p) throws Exception {
+        Thread.sleep(1000);
+        Output out = p.profile("-e alloc -d 3 -o collapsed");
+        // _[k] suffix in collapsed output corresponds to jdk.ObjectAllocationOutsideTLAB, which means alloc tracer is being used
+        assert !out.contains("_\\[k\\]"); // we are using alloc tracer instead of object sampler, should definitely not happen on first profiling call
+        Output outWithCopy = p.profileWithCopy("-e alloc -d 3 -o collapsed");
+        assert !outWithCopy.contains("_\\[k\\]"); // first instance of profiler has not properly relinquished the can_generate_sampled_object_alloc_events capability.
+    }
 }

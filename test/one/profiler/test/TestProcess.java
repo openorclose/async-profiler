@@ -247,11 +247,24 @@ public class TestProcess implements Closeable {
     }
 
     public Output profile(String args, boolean sudo) throws IOException, TimeoutException, InterruptedException {
+        return profile(args, sudo, "build/bin/asprof");
+    }
+
+    public Output profileWithCopy(String args) throws IOException, TimeoutException, InterruptedException {
+        return profileWithCopy(args, false);
+    }
+
+    // this profiles with a different copy of the profiler located in build_copy
+    public Output profileWithCopy(String args, boolean sudo) throws IOException, TimeoutException, InterruptedException {
+        return profile(args, sudo, "build/build_copy/bin/asprof");
+    }
+
+    private Output profile(String args, boolean sudo, String asprofPath) throws IOException, TimeoutException, InterruptedException {
         List<String> cmd = new ArrayList<>();
         if (sudo) {
             cmd.add("/usr/bin/sudo");
         }
-        cmd.add("build/bin/asprof");
+        cmd.add(asprofPath);
         addArgs(cmd, args);
         cmd.add(Long.toString(pid()));
         log.log(Level.FINE, "Profiling " + cmd);

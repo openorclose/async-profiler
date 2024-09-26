@@ -173,6 +173,9 @@ build-test: all build/$(TEST_JAR)
 
 test: all build/$(TEST_JAR)
 	echo "Running tests against $(LIB_PROFILER)"
+	cp -r build build_copy # make a copy to allow us to test how different copies of async profiler interact with one another
+	rm -rf build/build_copy
+	mv -f build_copy build
 	$(JAVA) $(TEST_FLAGS) -ea -cp "build/test.jar:build/jar/*:build/lib/*" one.profiler.test.Runner $(TESTS)
 
 build/$(TEST_JAR): $(TEST_SOURCES) build/$(CONVERTER_JAR)
