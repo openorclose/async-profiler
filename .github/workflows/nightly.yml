@@ -1,9 +1,9 @@
-name: Publish Nightly Builds
+name: Publish Nightly Builds ( test )
 
 on:
   push:
     branches:
-      - nightly_build
+      - master
 
 jobs:
   build-test-publish:
