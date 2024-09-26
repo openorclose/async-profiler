@@ -8,6 +8,7 @@ package test.jfr;
 import jdk.jfr.consumer.RecordedEvent;
 import jdk.jfr.consumer.RecordingFile;
 import one.profiler.test.Output;
+import one.profiler.test.Os;
 import one.profiler.test.Test;
 import one.profiler.test.TestProcess;
 
