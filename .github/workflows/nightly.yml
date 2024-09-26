@@ -42,3 +42,4 @@ jobs:
           # Uploading to the workflow automatically zips up the files, so we should upload the build directory instead of an already zipped release.
           # https://github.com/actions/upload-artifact?tab=readme-ov-file#zip-archives
           path: build/
+
