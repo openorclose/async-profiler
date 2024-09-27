@@ -36,6 +36,7 @@ jobs:
           make test # build and test
           make clean # remove test files
           make # build again without test files
+        shell: bash
       - uses: actions/upload-artifact@v4
         with:
           name: async-profiler-nightly-${{ github.sha }}-${{ matrix.archive_postfix }}
