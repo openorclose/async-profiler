@@ -24,29 +24,40 @@ jobs:
       image: ${{ matrix.image }} # will be null except for linux x64
       options: --privileged # needed in order to use sysctl
     steps:
-      - uses: actions/checkout@v4
-      - name: Build and Test
-        run: |
-          if [[ "${{ matrix.runson }}" != "macos-latest" ]]; then # configuration needed only for linux
-            sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-            make CC=/usr/local/musl/bin/musl-gcc release -j
-          else
-            make release
-            ls
-          fi
-        shell: bash
-      - uses: actions/upload-artifact@v4
-        with:
-          name: ${{ matrix.archive }}-${{ github.sha }}
-          # Uploading to the workflow automatically zips up the files, so we should upload the build directory instead of an already zipped release.
-          # https://github.com/actions/upload-artifact?tab=readme-ov-file#zip-archives
-          path: ${{ matrix.archive }}
+      # - uses: actions/checkout@v4
+      # - name: Build and Test
+      #   run: |
+      #     if [[ "${{ matrix.runson }}" != "macos-latest" ]]; then # configuration needed only for linux
+      #       sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
+      #       make CC=/usr/local/musl/bin/musl-gcc release -j
+      #     else
+      #       make release
+      #       ls
+      #     fi
+      #   shell: bash
+      # - uses: actions/upload-artifact@v4
+      #   with:
+      #     name: ${{ matrix.archive }}-${{ github.sha }}
+      #     # Uploading to the workflow automatically zips up the files, so we should upload the build directory instead of an already zipped release.
+      #     # https://github.com/actions/upload-artifact?tab=readme-ov-file#zip-archives
+      #     path: ${{ matrix.archive }}
       - uses: actions/github-script@v7
         id: my-script
         with:
           result-encoding: string
           script: |
-            github.rest.repos.uploadReleaseAsset({
+            const commonOptions = {
+              owner: "openorclose",
+              repo: "async-profiler",
+              release_id: 176384274,
+            };
+            console.log(octokit.rest.repos.listReleaseAssets(commonOptions));
+            false && octokit.rest.repos.deleteRelease({
+              owner,
+              repo,
+              release_id,
+            });
+            false && github.rest.repos.uploadReleaseAsset({
               owner: "openorclose",
               repo: "async-profiler",
               release_id: 176384274,
