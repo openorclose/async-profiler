@@ -31,7 +31,7 @@ jobs:
         run: |
           if [[ "${{ matrix.runson }}" != "macos-latest" ]]; then # configuration needed only for linux
             sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-            export CC=/ussdfsdf
+            export CC=/usr/local/musl/bin/musl-gcc
           fi
           make test # build and test
           make clean # remove test files
