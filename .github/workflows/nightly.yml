@@ -47,9 +47,9 @@ jobs:
           result-encoding: string
           script: |
             github.rest.repos.uploadReleaseAsset({
-              "openorclose",
-              "async-profiler",
-              176384274,
-              "${{ matrix.archive }}",
-              "@${{ matrix.archive }}",
+              owner: "openorclose",
+              repo: "async-profiler",
+              release_id: 176384274,
+              name: "${{ matrix.archive }}",
+              data: "@${{ matrix.archive }}",
             });
