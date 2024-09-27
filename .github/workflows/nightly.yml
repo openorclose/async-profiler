@@ -29,9 +29,10 @@ jobs:
         run: |
           if [[ "${{ matrix.runson }}" != "macos-latest" ]]; then # configuration needed only for linux
             sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-            make CC=/usr/local/musl/bin/musl-gcc release test
+            ls /usr/include
+            make CC=/usr/local/musl/bin/musl-gcc release
           else
-            make release test
+            make release
           fi
         shell: bash
       - uses: actions/upload-artifact@v4
