@@ -14,12 +14,10 @@ jobs:
             archive_postfix: macos-arm64
 
           - runson: ubuntu-latest # linux x64
-            image: docker://public.ecr.aws/async-profiler/asprof-builder-x86:test
-            arch: x86_64
+            image: docker://public.ecr.aws/async-profiler/asprof-builder-x86:test=
             archive_postfix: linux-x64
 
           - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }} # linux arm
-            arch: aarch64
             archive_postfix: linux-arm64
     runs-on: ${{ matrix.runson }}
     container:
@@ -31,11 +29,10 @@ jobs:
         run: |
           if [[ "${{ matrix.runson }}" != "macos-latest" ]]; then # configuration needed only for linux
             sudo sysctl kernel.perf_event_paranoid=1 && sudo sysctl kernel.kptr_restrict=0 # allow tests to execute
-            export CC=/usr/local/musl/bin/musl-gcc
+            make CC=/usr/local/musl/bin/musl-gcc release test
+          else
+            make release test
           fi
-          make test # build and test
-          make clean # remove test files
-          make # build again without test files
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
