@@ -51,7 +51,7 @@ jobs:
               repo: "async-profiler",
               release_id: 176384274,
             };
-            console.log(github.rest.repos.listReleaseAssets(commonOptions));
+            console.log(await github.rest.repos.listReleaseAssets(commonOptions));
             false && github.rest.repos.deleteRelease({
               owner,
               repo,
