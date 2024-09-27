@@ -11,14 +11,14 @@ jobs:
       matrix:
         include:
           - runson: macos-latest # mac
-            archive_postfix: macos-arm64
+            archive: async-profiler-3.0-macos.zip
 
           - runson: ubuntu-latest # linux x64
             image: docker://public.ecr.aws/async-profiler/asprof-builder-x86:test
-            archive_postfix: linux-x64
+            archive: async-profiler-3.0-linux-x64.tar.gz
 
           - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }} # linux arm
-            archive_postfix: linux-arm64
+            archive: async-profiler-3.0-linux-arm64.tar.gz
     runs-on: ${{ matrix.runson }}
     container:
       image: ${{ matrix.image }} # will be null except for linux x64
@@ -37,8 +37,8 @@ jobs:
         shell: bash
       - uses: actions/upload-artifact@v4
         with:
-          name: async-profiler-nightly-${{ github.sha }}-${{ matrix.archive_postfix }}
+          name: ${{ matrix.archive }}-${{ github.sha }}
           # Uploading to the workflow automatically zips up the files, so we should upload the build directory instead of an already zipped release.
           # https://github.com/actions/upload-artifact?tab=readme-ov-file#zip-archives
-          path: build/
+          path: ${{ matrix.archive }}
 
