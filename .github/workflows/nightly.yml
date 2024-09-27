@@ -51,8 +51,8 @@ jobs:
               repo: "async-profiler",
               release_id: 176384274,
             };
-            console.log(octokit.rest.repos.listReleaseAssets(commonOptions));
-            false && octokit.rest.repos.deleteRelease({
+            console.log(github.rest.repos.listReleaseAssets(commonOptions));
+            false && github.rest.repos.deleteRelease({
               owner,
               repo,
               release_id,
