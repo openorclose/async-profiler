@@ -29,6 +29,9 @@ jobs:
       image: ${{ matrix.image }}
       options: --privileged # needed in order to use sysctl
     steps:
+      - name: test
+        run: |
+          node -v
       - uses: actions/checkout@v4
       - name: Build, test, and publish
         run: |
