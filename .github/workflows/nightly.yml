@@ -25,6 +25,9 @@ jobs:
       image: ${{ matrix.image }} # will be null except for linux x64
       options: --privileged # needed in order to use sysctl
     steps:
+      - name: Test
+        run: |
+          echo $CODEBUILD_SRC_DIR
       - uses: actions/checkout@v4
       - name: Build and Test
         run: |
