@@ -27,8 +27,11 @@ jobs:
       - name: Test
         run: |
           echo $CODEBUILD_SRC_DIR
-          sudo mv $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node{,.back}
-          sudo ln -s /usr/bin/node $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node
+          ls -la $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/
+          sudo mv $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node{,.bak}
+          ls -la $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/
+          sudo ln -s /usr/local/lib/node/node-v20.17.0-linux-x64/bin/node $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node
+          ls -la $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/
       - uses: actions/checkout@v4
       - name: Build and Test
         run: |
