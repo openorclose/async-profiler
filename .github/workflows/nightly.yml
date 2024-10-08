@@ -49,6 +49,7 @@ jobs:
         with:
           result-encoding: string
           script: |
+            const fs = require('fs').promises;
             const commonOptions = {
               owner: "openorclose",
               repo: "async-profiler",
@@ -64,5 +65,5 @@ jobs:
             github.rest.repos.uploadReleaseAsset({
               ...commonOptions,
               name: "${{ matrix.archive }}",
-              data: "@${{ matrix.archive }}",
+              data: await fs.readFile("${{ matrix.archive }}"),
             });
