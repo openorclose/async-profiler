@@ -27,8 +27,8 @@ jobs:
     steps:
       - name: Test
         run: |
-          ls -la $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/
-          patchelf --set-interpreter /opt/glibc-2.28/lib/ld-linux-x86-64.so.2 --set-rpath /opt/glibc-2.28/lib/:/lib/$(arch)-linux-gnu/:/usr/lib/$(arch)-linux-gnu/ $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node
+          ls -la /opt/glibc-for-node20/
+          patchelf --set-interpreter /opt/glibc-for-node20/lib/ld-linux-x86-64.so.2 --set-rpath /opt/glibc-for-node20/lib/:/lib/$(arch)-linux-gnu/:/usr/lib/$(arch)-linux-gnu/ $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node
           # ls -la $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/
           # sudo ln -s /usr/local/lib/node/node-v20.17.0-linux-x64/bin/node $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node
           # ls -la $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/
