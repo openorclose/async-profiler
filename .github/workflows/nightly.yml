@@ -25,11 +25,11 @@ jobs:
       image: ${{ matrix.image }} # will be null except for linux x64
       options: --privileged # needed in order to use sysctl
     steps:
-      - name: Test
-        run: |
-          if [ "${{ matrix.runson }}" != "macos-latest" ]; then # configuration needed only for linux
-            patchelf --set-interpreter /opt/glibc-for-node20/lib/ld-2.28.so --set-rpath /opt/glibc-for-node20/lib/:/lib/$(arch)-linux-gnu/:/usr/lib/$(arch)-linux-gnu/ $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node
-          fi
+      # - name: Test
+      #   run: |
+      #     if [ "${{ matrix.runson }}" != "macos-latest" ]; then # configuration needed only for linux
+      #       patchelf --set-interpreter /opt/glibc-for-node20/lib/ld-2.28.so --set-rpath /opt/glibc-for-node20/lib/:/lib/$(arch)-linux-gnu/:/usr/lib/$(arch)-linux-gnu/ $CODEBUILD_SRC_DIR/actions-runner/externals/node20/bin/node
+      #     fi
       - uses: actions/checkout@v4
       - name: Build and Test
         run: |
