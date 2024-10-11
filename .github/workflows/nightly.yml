@@ -24,7 +24,6 @@ jobs:
     runs-on: ${{ matrix.runson }}
     container:
       image: ${{ matrix.image }} # will be null except for linux x64
-      options: --privileged # needed in order to use sysctl
     steps:
       - uses: actions/checkout@v4
       - name: Build and Test
