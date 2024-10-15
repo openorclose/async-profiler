@@ -15,12 +15,12 @@ jobs:
           - runson: macos-latest # mac
             archive: async-profiler-3.0-macos-arm64.zip
 
-          - runson: ubuntu-latest
-            image: public.ecr.aws/async-profiler/asprof-builder-x86:latest
-            archive: async-profiler-3.0-linux-x64.tar.gz
+          # - runson: ubuntu-latest
+          #   image: public.ecr.aws/async-profiler/asprof-builder-x86:latest
+          #   archive: async-profiler-3.0-linux-x64.tar.gz
 
-          - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }} # linux arm
-            archive: async-profiler-3.0-linux-arm64.tar.gz
+          # - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }} # linux arm
+          #   archive: async-profiler-3.0-linux-arm64.tar.gz
     runs-on: ${{ matrix.runson }}
     container:
       image: ${{ matrix.image }} # will be null except for linux x64
@@ -33,11 +33,11 @@ jobs:
           architecture: aarch64
       - name: Build and Test
         run: |
-          if case "${{ matrix.runson }}" in macos*) ;; *) false;; esac; then
-            make CC=/usr/local/musl/bin/musl-gcc release -j
-          else
-            make release 
-          fi
+          # if case "${{ matrix.runson }}" in macos*) ;; *) false;; esac; then
+            # make CC=/usr/local/musl/bin/musl-gcc release -j
+          # else
+            make release test -j
+          # fi
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.archive }}-${{ github.sha }}
