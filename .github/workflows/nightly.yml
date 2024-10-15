@@ -30,7 +30,9 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '11'
-          architecture: x64
+          architecture: |
+            x64
+            aarch64
       - name: Build and Test
         run: |
           # if case "${{ matrix.runson }}" in macos*) ;; *) false;; esac; then
