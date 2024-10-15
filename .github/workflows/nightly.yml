@@ -14,13 +14,14 @@ jobs:
         include:
           - runson: macos-latest # mac
             archive: async-profiler-3.0-macos.zip
-            extraarch: 'X64'
-          # - runson: ubuntu-latest
-          #   image: public.ecr.aws/async-profiler/asprof-builder-x86:latest
-          #   archive: async-profiler-3.0-linux-x64.tar.gz
+            extraarch: "{for_setup_java: 'x64', for_env: 'X64'}"
+             
+          - runson: ubuntu-latest
+            image: public.ecr.aws/async-profiler/asprof-builder-x86:latest
+            archive: async-profiler-3.0-linux-x64.tar.gz
 
-          # - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }} # linux arm
-          #   archive: async-profiler-3.0-linux-arm64.tar.gz
+          - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }} # linux arm
+            archive: async-profiler-3.0-linux-arm64.tar.gz
     runs-on: ${{ matrix.runson }}
     container:
       image: ${{ matrix.image }} # will be null except for linux x64
@@ -31,21 +32,22 @@ jobs:
         with:
           distribution: 'corretto'
           java-version: '11'
-          architecture: ${{ matrix.extraarch }}
+          architecture: ${{ fromJSON(matrix.extraarch).for_setup_java }}
       - uses: actions/setup-java@v4
         with:
           distribution: 'corretto'
           java-version: '11'
       - name: Build and Test
         run: |
-          # if case "${{ matrix.runson }}" in macos*) ;; *) false;; esac; then
-            # make CC=/usr/local/musl/bin/musl-gcc release -j
-          # else
+          if case "${{ matrix.runson }}" in macos*) ;; *) false;; esac; then
             make FAT_BINARY=true release test -j
-          # fi
+            
+          else
+            make CC=/usr/local/musl/bin/musl-gcc release -j
+          fi
       - name: Test Extra Architectures
         if: ${{ matrix.extraarch }}
-        run: JAVA_HOME=$JAVA_HOME_11_${{ matrix.extraarch }} make test
+        run: JAVA_HOME=$JAVA_HOME_11_${{ fromJSON(matrix.extraarch).for_env }} make test
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.archive }}-${{ github.sha }}
