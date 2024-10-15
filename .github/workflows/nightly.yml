@@ -14,7 +14,7 @@ jobs:
         include:
           - runson: macos-latest # mac
             archive: async-profiler-3.0-macos.zip
-            extraarch: 'x64'
+            extraarch: 'X64'
           # - runson: ubuntu-latest
           #   image: public.ecr.aws/async-profiler/asprof-builder-x86:latest
           #   archive: async-profiler-3.0-linux-x64.tar.gz
