@@ -36,7 +36,7 @@ jobs:
           # if case "${{ matrix.runson }}" in macos*) ;; *) false;; esac; then
             # make CC=/usr/local/musl/bin/musl-gcc release -j
           # else
-            make release test -j
+            make FAT_BINARY=true release test -j
           # fi
       - uses: actions/upload-artifact@v4
         with:
