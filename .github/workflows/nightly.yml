@@ -43,6 +43,9 @@ jobs:
           # else
             make FAT_BINARY=true release test -j
           # fi
+      - name: Test Extra Architectures
+        if: ${{ matrix.extraarch }}
+        run: JAVA_HOME=$JAVA_HOME_11_${{ matrix.extraarch }} make test
       - uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.archive }}-${{ github.sha }}
