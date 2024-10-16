@@ -40,14 +40,14 @@ jobs:
       - name: Build and Test
         id: build
         run: |
-          echo "hash=$(basename $(find . -type f -iname "async-profiler-*" ))" >> $GITHUB_OUTPUT
           if case "${{ matrix.runson }}" in macos*) ;; *) false;; esac; then
             make FAT_BINARY=true release -j
             
           else
             make CC=/usr/local/musl/bin/musl-gcc release -j
           fi
-    
+          echo "hash=$(basename $(find . -type f -iname "async-profiler-*" ))" >> $GITHUB_OUTPUT
+
       - uses: actions/upload-artifact@v4
         id: upload
         with:
