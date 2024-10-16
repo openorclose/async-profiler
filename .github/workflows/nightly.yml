@@ -38,9 +38,11 @@ jobs:
           distribution: 'corretto'
           java-version: '11'
       - name: Build and Test
+        id: build
         run: |
+          echo "hash=123" >> $GITHUB_OUTPUT
           if case "${{ matrix.runson }}" in macos*) ;; *) false;; esac; then
-            make FAT_BINARY=true release test -j
+            make FAT_BINARY=true release -j
             
           else
             make CC=/usr/local/musl/bin/musl-gcc release -j
@@ -49,9 +51,12 @@ jobs:
         if: ${{ matrix.extraarch }}
         run: JAVA_HOME=$JAVA_HOME_11_${{ fromJSON(matrix.extraarch).for_env }} make test
       - uses: actions/upload-artifact@v4
+        id: upload
         with:
           name: ${{ matrix.archive }}-${{ github.sha }}
           path: ${{ matrix.archive }}
+      - name: test
+        run: echo "${{ steps.build.outputs.hash }}"
       - uses: actions/github-script@v7
         id: delete-previous-and-upload-to-release
         with:
