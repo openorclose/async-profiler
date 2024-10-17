@@ -95,6 +95,7 @@ jobs:
               });
               console.log(await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"}));
             }
+            if (false)
             github.rest.repos.createRelease({
               ...commonOptions,
               tag_name: "nightly"
