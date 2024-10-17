@@ -73,18 +73,6 @@ jobs:
         with:
           result-encoding: string
           script: |
-            /*
-            octokit.rest.repos.deleteRelease({
-              owner,
-              repo,
-              release_id,
-            });
-            octokit.rest.repos.createRelease({
-              owner,
-              repo,
-              tag_name,
-              prerelease: true,
-            });*/
             const fs = require('fs').promises;
             const commonOptions = {
               owner: "async-profiler",
