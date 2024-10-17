@@ -90,12 +90,13 @@ jobs:
             } catch (e) {
               found = false;
             }
-            console.log(await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"}));
-            if (false) {
-              await github.rest.repos.deleteRelease({
+            await github.rest.repos.deleteRelease({
                 ...commonOptions,
                 release_id: release.data.id,
               });
+            console.log(await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"}));
+            if (false) {
+              
               
             }
             if (false) 
