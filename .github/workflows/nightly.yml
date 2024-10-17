@@ -95,7 +95,7 @@ jobs:
                 ...commonOptions,
                 release_id: release.data.id,
               });
-              await github.rest.git.deleteRef({commonOptions, ref: "ref/tags/nightly"});
+              await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"});
             }
             github.rest.repos.createRelease({
               ...commonOptions,
