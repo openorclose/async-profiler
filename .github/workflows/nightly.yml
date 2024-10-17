@@ -86,8 +86,3 @@ jobs:
               ...commonOptions,
               release_id: release.data.id,
             });
-            github.rest.repos.uploadReleaseAsset({
-              ...commonOptions,
-              name: `${{ steps.build.outputs.archive }}-${{ steps.build.outputs.hash }}`,
-              data: await fs.readFile("${{ steps.build.outputs.archive }}"),
-            });
