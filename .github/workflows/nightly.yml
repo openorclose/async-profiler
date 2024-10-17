@@ -92,7 +92,7 @@ jobs:
             };
             const release = github.rest.repos.getReleaseByTag({
               ...commonOptions,
-              tag,
+              "nightly",
             });
             console.log(release);
             const assets = await github.rest.repos.listReleaseAssets(commonOptions);
