@@ -82,7 +82,11 @@ jobs:
               ...commonOptions,
               tag: "nightly",
             });
-            console.log(release);
+            github.rest.repos.deleteRelease({
+              owner,
+              repo,
+              release.data.id,
+            });
             const assets = await github.rest.repos.listReleaseAssets(commonOptions);
             if (assets.status !== 200) {
               throw new Error("Unable to get list of assets from release!");
