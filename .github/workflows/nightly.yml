@@ -3,7 +3,7 @@ name: Publish Nightly Builds
 on:
   push:
     branches:
-      - master
+      - recreate_release
 
 env:
   JAVA_DISTRIBUTION: 'corretto'
@@ -16,8 +16,8 @@ jobs:
       matrix:
         include:
           - runson: macos-14 # mac arm
-          - runson: codebuild-async-profiler-nightly-builds-x86-${{ github.run_id }}-${{ github.run_attempt }}
-          - runson: codebuild-async-profiler-nightly-builds-${{ github.run_id }}-${{ github.run_attempt }}
+          - runson: codebuild-test-x86-${{ github.run_id }}-${{ github.run_attempt }}
+          - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
     runs-on: ${{ matrix.runson }}
     steps:
       - name: Setup Java for macOS x64
@@ -73,12 +73,29 @@ jobs:
         with:
           result-encoding: string
           script: |
+            /*
+            octokit.rest.repos.deleteRelease({
+              owner,
+              repo,
+              release_id,
+            });
+            octokit.rest.repos.createRelease({
+              owner,
+              repo,
+              tag_name,
+              prerelease: true,
+            });*/
             const fs = require('fs').promises;
             const commonOptions = {
               owner: "async-profiler",
               repo: "async-profiler",
-              release_id: 175290112,
             };
+            const release = octokit.rest.repos.getReleaseByTag({
+              owner,
+              repo,
+              tag,
+            });
+            console.log(release);
             const assets = await github.rest.repos.listReleaseAssets(commonOptions);
             if (assets.status !== 200) {
               throw new Error("Unable to get list of assets from release!");
