@@ -91,8 +91,7 @@ jobs:
               repo: "async-profiler",
             };
             const release = github.rest.repos.getReleaseByTag({
-              owner,
-              repo,
+              ...commonOptions,
               tag,
             });
             console.log(release);
