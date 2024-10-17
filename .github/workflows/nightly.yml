@@ -83,8 +83,7 @@ jobs:
               tag: "nightly",
             });
             github.rest.repos.deleteRelease({
-              owner,
-              repo,
+              ...commonOptions,
               release_id: release.data.id,
             });
             github.rest.repos.uploadReleaseAsset({
