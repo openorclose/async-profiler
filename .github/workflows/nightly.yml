@@ -32,7 +32,7 @@ jobs:
         with:
           distribution: ${{ env.JAVA_DISTRIBUTION }}
           java-version: ${{ env.JAVA_VERSION }}
-          architecture: not specifying this defaults to architecture of the runner
+          #architecture: not specifying this defaults to architecture of the runner
       - name: Checkout sources
         uses: actions/checkout@v4
       - name: Build and test
