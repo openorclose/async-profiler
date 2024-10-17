@@ -79,8 +79,9 @@ jobs:
               repo: "async-profiler",
             };
             let found = false;
+            let release;
             try {
-              const release = await github.rest.repos.getReleaseByTag({
+              release = await github.rest.repos.getReleaseByTag({
                 ...commonOptions,
                 tag: "nightly",
               });
