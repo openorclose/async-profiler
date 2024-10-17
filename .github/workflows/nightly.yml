@@ -90,7 +90,7 @@ jobs:
               owner: "async-profiler",
               repo: "async-profiler",
             };
-            const release = octokit.rest.repos.getReleaseByTag({
+            const release = github.rest.repos.getReleaseByTag({
               owner,
               repo,
               tag,
