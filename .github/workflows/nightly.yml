@@ -80,8 +80,6 @@ jobs:
             };
             let found = true;
             let release;
-            console.log(await github.rest.repos.listTags({...commonOptions
-            }));
             try {
               release = await github.rest.repos.getReleaseByTag({
                 ...commonOptions,
@@ -90,14 +88,12 @@ jobs:
             } catch (e) {
               found = false;
             }
-            await github.rest.repos.deleteRelease({
+            if (false) {
+              await github.rest.repos.deleteRelease({
                 ...commonOptions,
                 release_id: release.data.id,
               });
-            console.log(await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"}));
-            if (false) {
-              
-              
+              console.log(await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"}));
             }
             if (false) 
             github.rest.repos.createRelease({
