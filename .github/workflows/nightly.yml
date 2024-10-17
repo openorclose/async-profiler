@@ -87,13 +87,6 @@ jobs:
               repo,
               release_id: release.data.id,
             });
-#            const assets = await github.rest.repos.listReleaseAssets(commonOptions);
-#            if (assets.status !== 200) {
-#              throw new Error("Unable to get list of assets from release!");
-#            }
-#            await Promise.all(assets.data
-#              .filter(({name}) => name.startsWith("${{ steps.build.outputs.archive }}"))
-#              .map(({id}) => github.rest.repos.deleteReleaseAsset({...commonOptions, asset_id: id})));
             github.rest.repos.uploadReleaseAsset({
               ...commonOptions,
               name: `${{ steps.build.outputs.archive }}-${{ steps.build.outputs.hash }}`,
