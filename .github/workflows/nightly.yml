@@ -80,6 +80,8 @@ jobs:
             };
             let found = true;
             let release;
+            console.log(await github.rest.repos.listTags({...commonOptions
+            }));
             try {
               release = await github.rest.repos.getReleaseByTag({
                 ...commonOptions,
