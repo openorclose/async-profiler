@@ -75,7 +75,7 @@ jobs:
           script: |
             const fs = require('fs').promises;
             const commonOptions = {
-              owner: "async-profiler",
+              owner: "openorclose",
               repo: "async-profiler",
             };
             const release = github.rest.repos.getReleaseByTag({
