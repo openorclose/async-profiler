@@ -78,7 +78,7 @@ jobs:
               owner: "openorclose",
               repo: "async-profiler",
             };
-            let found = false;
+            let found = true;
             let release;
             try {
               release = await github.rest.repos.getReleaseByTag({
@@ -86,7 +86,7 @@ jobs:
                 tag: "nightly",
               });
             } catch (e) {
-              found = true;
+              found = false;
             }
             if (found) {
               github.rest.repos.deleteRelease({
