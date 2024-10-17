@@ -27,26 +27,26 @@ jobs:
 #          distribution: ${{ env.JAVA_DISTRIBUTION }}
 #          java-version: ${{ env.JAVA_VERSION }}
 #          architecture: x64 # set up for x64, as the default arm one will override this later
-#      - name: Setup Java for default architecture
-#        uses: actions/setup-java@v4
-#        with:
-#          distribution: ${{ env.JAVA_DISTRIBUTION }}
-#          java-version: ${{ env.JAVA_VERSION }}
-#          # architecture: not specifying this defaults to architecture of the runner
-#      - name: Checkout sources
-#        uses: actions/checkout@v4
-#      - name: Build and test
-#        id: build
-#        run: |
-#          case "${{ matrix.runson }}" in
-#            macos*) make FAT_BINARY=true release -j
-#            ;;
-#            *) make CC=/usr/local/musl/bin/musl-gcc release -j
-#            ;;
-#          esac
-#          # there is no git on the codebuild runner, so it's easier to get it from github.sha
-#          echo "hash=$(echo ${{ github.sha }} | cut -c-7)" >> $GITHUB_OUTPUT
-#          echo "archive=$(basename $(find . -type f -iname "async-profiler-*" ))" >> $GITHUB_OUTPUT
+      - name: Setup Java for default architecture
+        uses: actions/setup-java@v4
+        with:
+          distribution: ${{ env.JAVA_DISTRIBUTION }}
+          java-version: ${{ env.JAVA_VERSION }}
+          architecture: not specifying this defaults to architecture of the runner
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Build and test
+        id: build
+        run: |
+          case "${{ matrix.runson }}" in
+            macos*) make FAT_BINARY=true release -j
+            ;;
+            *) make CC=/usr/local/musl/bin/musl-gcc release -j
+            ;;
+          esac
+          # there is no git on the codebuild runner, so it's easier to get it from github.sha
+          echo "hash=$(echo ${{ github.sha }} | cut -c-7)" >> $GITHUB_OUTPUT
+          echo "archive=$(basename $(find . -type f -iname "async-profiler-*" ))" >> $GITHUB_OUTPUT
 #      - name: Upload test logs for default architecture
 #        uses: actions/upload-artifact@v4
 #        if: always() # we always want to upload test logs, especially when tests fail
@@ -56,18 +56,28 @@ jobs:
 #      - name: Test macOS x64
 #        if: ${{ matrix.runson == 'macos-14' }}
 #        run: JAVA_HOME=$JAVA_HOME_${{ env.JAVA_VERSION }}_X64 make test
-#      - name: Upload async-profiler binaries to workflow
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: ${{ steps.build.outputs.archive }}-${{ steps.build.outputs.hash }}
-#          path: ${{ steps.build.outputs.archive }}
+      - name: Upload async-profiler binaries to workflow
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ steps.build.outputs.archive }}-${{ steps.build.outputs.hash }}
+          path: ${{ steps.build.outputs.archive }}
 #      - name: Upload test logs for macOS x64
 #        uses: actions/upload-artifact@v4
 #        if: ${{ matrix.runson == 'macos-14' }}
 #        with:
 #          name: test-logs-macos-14-x64
 #          path: build/test/logs/
-      - name: Upload async-profiler binaries to nightly release and delete previous releases
+  publish:
+    runs-on: ubuntu-latest
+    needs: build-test-publish
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: async-profiler-*
+          merge-multiple: 'true'
+      - name: TEst
+        run: ls -la
+      - name: Test
         uses: actions/github-script@v7
         id: delete-previous-and-upload-to-release
         with:
@@ -95,8 +105,8 @@ jobs:
               });
               console.log(await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"}));
             }
-            if (false)
-            github.rest.repos.createRelease({
+            const newRelease = github.rest.repos.createRelease({
               ...commonOptions,
-              tag_name: "nightly"
+              tag_name: "nightly",
+              target_commitish: "${{ github.sha }}",
             });
