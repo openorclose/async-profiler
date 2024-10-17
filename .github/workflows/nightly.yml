@@ -78,11 +78,22 @@ jobs:
               owner: "openorclose",
               repo: "async-profiler",
             };
-            const release = await github.rest.repos.getReleaseByTag({
+            let found = false;
+            try {
+              const release = await github.rest.repos.getReleaseByTag({
+                ...commonOptions,
+                tag: "nightly",
+              });
+            } catch (e) {
+              found = true;
+            }
+            if (found) {
+              github.rest.repos.deleteRelease({
+                ...commonOptions,
+                release_id: release.data.id,
+              });
+            }
+            github.rest.repos.createRelease({
               ...commonOptions,
-              tag: "nightly",
-            });
-            github.rest.repos.deleteRelease({
-              ...commonOptions,
-              release_id: release.data.id,
+              tag_name: "nightly"
             });
