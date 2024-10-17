@@ -105,8 +105,17 @@ jobs:
               });
               console.log(await github.rest.git.deleteRef({...commonOptions, ref: "tags/nightly"}));
             }
-            const newRelease = github.rest.repos.createRelease({
+            const newRelease = await github.rest.repos.createRelease({
               ...commonOptions,
               tag_name: "nightly",
               target_commitish: "${{ github.sha }}",
             });
+            console.log(newRelease);
+            for (const archiveName of await fs.readdir(process.cwd())) {
+              console.log(archiveName);
+            }/*
+            github.rest.repos.uploadReleaseAsset({
+              ...commonOptions,
+              name: `${{ steps.build.outputs.archive }}-${{ steps.build.outputs.hash }}`,
+              data: await fs.readFile("${{ steps.build.outputs.archive }}"),
+            });*/
