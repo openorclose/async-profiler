@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - nightly_enhancements
+  pull_request:
+    branches:
+      - nightly_enhancements
 
 env:
   JAVA_DISTRIBUTION: 'corretto'
@@ -84,6 +87,7 @@ jobs:
           name: test-logs-macos-14-x64
           path: build/test/logs/
   publish:
+    if: github.event_name == 'push'
     runs-on: ubuntu-latest
     needs: [build-converter-jars, build-test]
     steps:
