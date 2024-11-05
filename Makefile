@@ -2,6 +2,8 @@ PROFILER_VERSION ?= 3.0
 
 ifeq ($(COMMIT_TAG),true)
   PROFILER_VERSION := $(PROFILER_VERSION)-$(shell git rev-parse --short=8 HEAD)
+else ifneq ($(COMMIT_TAG),)
+  PROFILER_VERSION := $(PROFILER_VERSION)-$(COMMIT_TAG)
 endif
 
 PACKAGE_NAME=async-profiler-$(PROFILER_VERSION)-$(OS_TAG)-$(ARCH_TAG)
@@ -122,9 +124,7 @@ $(PACKAGE_NAME).tar.gz: $(PACKAGE_DIR)
 
 $(PACKAGE_NAME).zip: $(PACKAGE_DIR)
 	truncate -cs -`stat -f "%z" build/$(CONVERTER_JAR)` $(PACKAGE_DIR)/$(JFRCONV)
-ifneq ($(GITHUB_ACTIONS), true)
-	codesign -s "Developer ID" -o runtime --timestamp -v $(PACKAGE_DIR)/$(ASPROF) $(PACKAGE_DIR)/$(JFRCONV) $(PACKAGE_DIR)/$(LIB_PROFILER)
-endif
+
 	cat build/$(CONVERTER_JAR) >> $(PACKAGE_DIR)/$(JFRCONV)
 	ditto -c -k --keepParent $(PACKAGE_DIR) $@
 	rm -r $(PACKAGE_DIR)
