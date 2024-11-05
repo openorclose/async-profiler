@@ -15,8 +15,8 @@ jobs:
       matrix:
         include:
           - runson: macos-14 # mac arm
-          - runson: codebuild-async-profiler-nightly-builds-x86-${{ github.run_id }}-${{ github.run_attempt }}
-          - runson: codebuild-async-profiler-nightly-builds-${{ github.run_id }}-${{ github.run_attempt }}
+          - runson: codebuild-test-x86-${{ github.run_id }}-${{ github.run_attempt }}
+          - runson: codebuild-test-${{ github.run_id }}-${{ github.run_attempt }}
     runs-on: ${{ matrix.runson }}
     steps:
       - name: Setup Java for macOS x64
@@ -37,15 +37,15 @@ jobs:
       - name: Build and test
         id: build
         run: |
+          # there is no git on the codebuild runner, so it's easier to get it from github.sha
+          HASH=$(echo ${{ github.sha }} | cut -c-7)
           case "${{ matrix.runson }}" in
-            macos*) make FAT_BINARY=true release test -j
+            macos*) make COMMIT_TAG=$HASH FAT_BINARY=true release -j
             ;;
-            *) make CC=/usr/local/musl/bin/musl-gcc release test -j
+            *) make COMMIT_TAG=$HASH CC=/usr/local/musl/bin/musl-gcc release -j
             ;;
           esac
-          # there is no git on the codebuild runner, so it's easier to get it from github.sha
-          echo "hash=$(echo ${{ github.sha }} | cut -c-7)" >> $GITHUB_OUTPUT
-          echo "archive=$(basename $(find . -type f -iname "async-profiler-*" ))" >> $GITHUB_OUTPUT
+          echo "archive=$(find . -type f -iname "async-profiler-*" )" >> $GITHUB_OUTPUT
       - name: Upload test logs for default architecture
         uses: actions/upload-artifact@v4
         if: always() # we always want to upload test logs, especially when tests fail
@@ -54,15 +54,15 @@ jobs:
           path: build/test/logs/
       - name: Test macOS x64
         if: ${{ matrix.runson == 'macos-14' }}
-        run: JAVA_HOME=$JAVA_HOME_${{ env.JAVA_VERSION }}_X64 make test
+        run: JAVA_HOME=$JAVA_HOME_${{ env.JAVA_VERSION }}_X64 make
       - name: Upload async-profiler binaries to workflow
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ steps.build.outputs.archive }}-${{ steps.build.outputs.hash }}
+          name: ${{ steps.build.outputs.archive }}
           path: ${{ steps.build.outputs.archive }}
       - name: Upload test logs for macOS x64
         uses: actions/upload-artifact@v4
-        if: ${{ matrix.runson == 'macos-14' }}
+        if: matrix.runson == 'macos-14' && always()
         with:
           name: test-logs-macos-14-x64
           path: build/test/logs/
@@ -82,7 +82,7 @@ jobs:
           script: |
             const fs = require('fs').promises;
             const commonOptions = {
-              owner: "async-profiler",
+              owner: "openorclose",
               repo: "async-profiler",
             };
             let previousRelease = undefined;
@@ -115,19 +115,10 @@ jobs:
             })).data.id;
             // upload binaries to draft release
             for (const archiveName of await fs.readdir(process.cwd())) {
-              let basename;
-              let extension;
-              if (archiveName.endsWith(".zip")) {
-                basename = archiveName.substring(0, archiveName.lastIndexOf(".zip"));
-                extension = ".zip";
-              } else {
-                basename = archiveName.substring(0, archiveName.lastIndexOf(".tar.gz"));
-                extension = ".tar.gz";
-              }
               await github.rest.repos.uploadReleaseAsset({
                 ...commonOptions,
                 release_id: newReleaseId,
-                name: `${basename}-${"${{ github.sha }}".substring(0, 7)}${extension}`,
+                name: archiveName,
                 data: await fs.readFile(archiveName),
               });
             }
