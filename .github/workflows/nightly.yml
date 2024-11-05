@@ -3,7 +3,7 @@ name: Publish Nightly Builds
 on:
   push:
     branches:
-      - master
+      - nightly_enhancements
 
 env:
   JAVA_DISTRIBUTION: 'corretto'
