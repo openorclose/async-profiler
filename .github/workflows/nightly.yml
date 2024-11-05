@@ -10,6 +10,23 @@ env:
   JAVA_VERSION: '11'
 
 jobs:
+  build-converter-jars:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout sources
+        uses: actions/checkout@v4
+      - name: Build jars
+        run: make jar
+      - name: Upload async-profiler.jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: async-profiler.jar
+          path: build/jar/async-profiler.jar
+      - name: Upload jfr-converter.jar
+        uses: actions/upload-artifact@v4
+        with:
+          name: jfr-converter.jar
+          path: build/jar/jfr-converter.jar
   build-test:
     strategy:
       matrix:
@@ -68,12 +85,12 @@ jobs:
           path: build/test/logs/
   publish:
     runs-on: ubuntu-latest
-    needs: build-test
+    needs: [build-jar, build-test]
     steps:
-      - name: Download async-profiler binaries
+      - name: Download async-profiler binaries and converter jars
         uses: actions/download-artifact@v4
         with:
-          pattern: async-profiler-*
+          pattern: *
           merge-multiple: 'true'
       - name: Delete previous release and publish new release
         uses: actions/github-script@v7
@@ -113,7 +130,7 @@ jobs:
               prerelease: true,
               draft: true,
             })).data.id;
-            // upload binaries to draft release
+            // upload binaries and converter jars to draft release
             for (const archiveName of await fs.readdir(process.cwd())) {
               await github.rest.repos.uploadReleaseAsset({
                 ...commonOptions,
