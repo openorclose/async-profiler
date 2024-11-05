@@ -45,7 +45,7 @@ jobs:
             *) make COMMIT_TAG=$HASH CC=/usr/local/musl/bin/musl-gcc release -j
             ;;
           esac
-          echo "archive=$(find . -type f -iname "async-profiler-*" )" >> $GITHUB_OUTPUT
+          echo "archive=$(basename $(find . -type f -iname "async-profiler-*" ))" >> $GITHUB_OUTPUT
       - name: Upload test logs for default architecture
         uses: actions/upload-artifact@v4
         if: always() # we always want to upload test logs, especially when tests fail
