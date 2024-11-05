@@ -13,7 +13,7 @@ env:
   JAVA_VERSION: '11'
 
 jobs:
-  build-converter-jars:
+  build-jars:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout sources
@@ -91,9 +91,9 @@ jobs:
   publish-only-on-push:
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
-    needs: [build-converter-jars, build-binaries-and-test]
+    needs: [build-jars, build-binaries-and-test]
     steps:
-      - name: Download async-profiler binaries and converter jars
+      - name: Download async-profiler binaries and jars
         uses: actions/download-artifact@v4
         with:
           merge-multiple: 'true'
@@ -135,7 +135,7 @@ jobs:
               prerelease: true,
               draft: true,
             })).data.id;
-            // upload binaries and converter jars to draft release
+            // upload binaries and jars to draft release
             for (const archiveName of await fs.readdir(process.cwd())) {
               await github.rest.repos.uploadReleaseAsset({
                 ...commonOptions,
