@@ -85,7 +85,7 @@ jobs:
           path: build/test/logs/
   publish:
     runs-on: ubuntu-latest
-    needs: [build-jar, build-test]
+    needs: [build-converter-jars, build-test]
     steps:
       - name: Download async-profiler binaries and converter jars
         uses: actions/download-artifact@v4
