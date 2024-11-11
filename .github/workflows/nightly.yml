@@ -3,10 +3,10 @@ name: Test and Publish Nightly Builds
 on:
   push:
     branches:
-      - nightly_enhancements # change to master
+      - nightly_enhancements_pr # change to master
   pull_request:
     branches:
-      - nightly_enhancements # change to master
+      - nightly_enhancements_pr # change to master
 
 env:
   JAVA_DISTRIBUTION: 'corretto'
