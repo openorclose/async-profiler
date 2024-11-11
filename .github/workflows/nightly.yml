@@ -59,6 +59,7 @@ jobs:
       - name: Build and test
         id: build
         run: |
+          sysctl
           # there is no git on the codebuild runner, so it's easier to get it from github.sha
           HASH=$(echo ${{ github.sha }} | cut -c-7)
           case "${{ matrix.runson }}" in
